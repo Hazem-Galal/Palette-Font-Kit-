@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Color & Typography Theme Generator</title>
+
+  <!-- Google Fonts (explicit, minimal, with fallbacks) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Sans+3:wght@400;500&family=IBM+Plex+Sans:wght@400;500&family=Work+Sans:wght@400;500&family=Roboto:wght@400;500&family=Open+Sans:wght@400;600&family=Nunito:wght@400;600&family=Lato:wght@400;700&family=Playfair+Display:wght@600&family=DM+Serif+Display&family=Merriweather:wght@400;700&family=Libre+Baskerville:wght@400;700&family=Poppins:wght@500;600&family=Montserrat:wght@500;600&family=Space+Grotesk:wght@500;600&family=Raleway:wght@500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      /* UI shell defaults */
+      --ui-bg: #f8fafc;
+      --ui-surface: #ffffff;
+      --ui-border: rgba(0, 0, 0, 0.08);
+      --ui-text: #0f172a;
+
+      /* Theme defaults */
+      --color-bg: #ffffff;
+      --color-text: #0f172a;
+      --color-primary: #2563eb;
+      --color-accent: #16a34a;
+
+      --font-heading: 'Playfair Display', Georgia, serif;
+      --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    /* Dark-mode-safe UI shell fallback */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ui-bg: #0b1120;
+        --ui-surface: #020617;
+        --ui-text: #e5e7eb;
+        --ui-border: rgba(255, 255, 255, 0.08);
+      }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--ui-bg);
+      color: var(--ui-text);
+      font-family: var(--font-body, system-ui, sans-serif);
+      line-height: 1.5;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-heading, Georgia, serif);
+    }
+
+    header {
+      padding: 2rem 1rem 1rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 1.25rem;
+      margin: 0 0 0.25rem;
+      font-weight: 600;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 0.875rem;
+      color: #64748b;
+    }
+
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .preview {
+      background: var(--color-bg, #ffffff);
+      color: var(--color-text, #0f172a);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .preview h2 {
+      font-size: 2rem;
+      margin: 0 0 0.5rem;
+    }
+
+    .preview p {
+      max-width: 60ch;
+      margin: 0 0 1.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--color-accent);
+      color: #ffffff;
+      padding: 0.25rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--color-primary);
+      color: #ffffff;
+      border: none;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--color-primary);
+      border: 1px solid var(--color-primary);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    .controls button {
+      font-size: 0.875rem;
+      padding: 0.6rem 0.9rem;
+      border-radius: 8px;
+      border: 1px solid var(--ui-border);
+      background: var(--ui-surface);
+      cursor: pointer;
+      color: var(--ui-text);
+    }
+
+    .controls button[aria-pressed="true"] {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      font-weight: 500;
+    }
+
+    .controls button:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f172a;
+      color: #ffffff;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Theme Generator</h1>
+    <p>Curated color palettes and typography pairings</p>
+  </header>
+
+  <main>
+    <section class="preview">
+      <span class="badge">Preview</span>
+      <h2>Design with Confidence</h2>
+      <p>
+        This preview demonstrates the generated theme applied to a realistic UI
+        surface. Colors and typography update together.
+      </p>
+      <div class="actions">
+        <button class="btn-primary">Primary Action</button>
+        <button class="btn-secondary">Secondary</button>
+      </div>
+    </section>
+
+    <div class="controls">
+      <button id="generate">Generate Theme</button>
+      <button id="lockColors" aria-pressed="false">Lock Colors</button>
+      <button id="lockFonts" aria-pressed="false">Lock Fonts</button>
+      <button id="scopeToggle" aria-pressed="false">Apply Globally</button>
+      <button id="copy">Copy CSS Variables</button>
+      <button id="reset">Reset</button>
+    </div>
+  </main>
+
+  <div class="toast" id="toast">Copied</div>
+
+  <script>
+    const palettes = [
+      { bg: '#ffffff', text: '#0f172a', primary: '#2563eb', accent: '#16a34a' },
+      { bg: '#0f172a', text: '#f8fafc', primary: '#38bdf8', accent: '#22c55e' },
+      { bg: '#fdf4ff', text: '#581c87', primary: '#a855f7', accent: '#db2777' },
+      { bg: '#fefce8', text: '#422006', primary: '#ca8a04', accent: '#16a34a' },
+      { bg: '#f8fafc', text: '#020617', primary: '#0ea5e9', accent: '#22c55e' },
+      { bg: '#fff7ed', text: '#431407', primary: '#f97316', accent: '#22c55e' },
+      { bg: '#ecfeff', text: '#083344', primary: '#06b6d4', accent: '#0ea5e9' },
+      { bg: '#f1f5f9', text: '#020617', primary: '#6366f1', accent: '#0ea5e9' },
+      { bg: '#fef2f2', text: '#450a0a', primary: '#dc2626', accent: '#f97316' },
+      { bg: '#0b1120', text: '#e5e7eb', primary: '#22d3ee', accent: '#67e8f9' }
+    ];
+
+    const fonts = [
+      "'Inter', system-ui, sans-serif",
+      "'Source Sans 3', system-ui, sans-serif",
+      "'IBM Plex Sans', system-ui, sans-serif",
+      "'Work Sans', system-ui, sans-serif",
+      "'Roboto', system-ui, sans-serif",
+      "'Open Sans', system-ui, sans-serif",
+      "'Nunito', system-ui, sans-serif",
+      "'Lato', system-ui, sans-serif",
+      "'Playfair Display', Georgia, serif",
+      "'DM Serif Display', Georgia, serif",
+      "'Merriweather', Georgia, serif",
+      "'Libre Baskerville', Georgia, serif",
+      "'Poppins', system-ui, sans-serif",
+      "'Montserrat', system-ui, sans-serif",
+      "'Space Grotesk', system-ui, sans-serif",
+      "'Raleway', system-ui, sans-serif"
+    ];
+
+    const state = {
+      palette: palettes[0],
+      headingFont: fonts[8],
+      bodyFont: fonts[0],
+      lockColors: false,
+      lockFonts: false,
+      applyGlobally: false
+    };
+
+    function pickRandom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function applyTheme() {
+      const target = state.applyGlobally
+        ? document.documentElement
+        : document.querySelector('.preview');
+
+      target.style.setProperty('--color-bg', state.palette.bg);
+      target.style.setProperty('--color-text', state.palette.text);
+      target.style.setProperty('--color-primary', state.palette.primary);
+      target.style.setProperty('--color-accent', state.palette.accent);
+      target.style.setProperty('--font-heading', state.headingFont);
+      target.style.setProperty('--font-body', state.bodyFont);
+    }
+
+    function generateTheme() {
+      if (!state.lockColors) state.palette = pickRandom(palettes);
+      if (!state.lockFonts) {
+        state.headingFont = pickRandom(fonts);
+        state.bodyFont = pickRandom(fonts);
+      }
+      applyTheme();
+    }
+
+    function copyTokens() {
+      const css = `
+:root {
+  --color-bg: ${state.palette.bg};
+  --color-text: ${state.palette.text};
+  --color-primary: ${state.palette.primary};
+  --color-accent: ${state.palette.accent};
+  --font-heading: ${state.headingFont};
+  --font-body: ${state.bodyFont};
+}
+      `.trim();
+
+      navigator.clipboard.writeText(css).then(() => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 1200);
+      });
+    }
+
+    document.getElementById('generate').onclick = generateTheme;
+
+    document.getElementById('lockColors').onclick = e => {
+      state.lockColors = !state.lockColors;
+      e.target.setAttribute('aria-pressed', state.lockColors);
+    };
+
+    document.getElementById('lockFonts').onclick = e => {
+      state.lockFonts = !state.lockFonts;
+      e.target.setAttribute('aria-pressed', state.lockFonts);
+    };
+
+    document.getElementById('scopeToggle').onclick = e => {
+      state.applyGlobally = !state.applyGlobally;
+      e.target.setAttribute('aria-pressed', state.applyGlobally);
+      e.target.textContent = state.applyGlobally ? 'Preview Only' : 'Apply Globally';
+      applyTheme();
+    };
+
+    document.getElementById('copy').onclick = copyTokens;
+
+    document.getElementById('reset').onclick = () => {
+      state.palette = palettes[0];
+      state.headingFont = fonts[8];
+      state.bodyFont = fonts[0];
+      state.lockColors = false;
+      state.lockFonts = false;
+      state.applyGlobally = false;
+
+      document.getElementById('lockColors').setAttribute('aria-pressed', false);
+      document.getElementById('lockFonts').setAttribute('aria-pressed', false);
+      document.getElementById('scopeToggle').setAttribute('aria-pressed', false);
+      document.getElementById('scopeToggle').textContent = 'Apply Globally';
+
+      applyTheme();
+    };
+
+    applyTheme();
+  </script>
+</body>
+</html>
